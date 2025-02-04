@@ -1,6 +1,8 @@
 import { SignedIn, SignedOut, SignInButton } from '@clerk/clerk-react'
 import { LineChart, Wallet, TrendingUp, Users, User, Search } from 'lucide-react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext'
+import { ThemeToggle } from './components/ThemeToggle'
 import PoliticiansPage from './features/politicians/PoliticiansPage'
 import StocksPage from './features/stocks/StocksPage'
 import OverviewPage from './features/stocks/pages/OverviewPage'
@@ -223,50 +225,55 @@ function HomePage() {
 
 export default function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-black">
-        <SignedIn>
-          <nav className="fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-b border-white/10 z-50">
-            <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-              <div className="flex items-center space-x-8">
-                <Link to="/" className="flex items-center space-x-2">
-                  <TrendingUp className="h-6 w-6 text-white" />
-                  <span className="text-lg font-bold text-white">InsiderTracker</span>
-                </Link>
-                <div className="flex items-center space-x-4">
-                  <Link to="/politicians" className="text-white/70 hover:text-white transition-colors">
-                    Politicians
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-background text-foreground">
+          <SignedIn>
+            <nav className="fixed top-0 left-0 right-0 bg-background/50 backdrop-blur-sm border-b border-border z-50">
+              <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+                <div className="flex items-center space-x-8">
+                  <Link to="/" className="flex items-center space-x-2">
+                    <TrendingUp className="h-6 w-6 text-foreground" />
+                    <span className="text-lg font-bold text-foreground">InsiderTracker</span>
                   </Link>
-                  <Link to="/stocks" className="text-white/70 hover:text-white transition-colors">
-                    Stocks
-                  </Link>
+                  <div className="flex items-center space-x-4">
+                    <Link to="/politicians" className="text-muted-foreground hover:text-foreground transition-colors">
+                      Politicians
+                    </Link>
+                    <Link to="/stocks" className="text-muted-foreground hover:text-foreground transition-colors">
+                      Stocks
+                    </Link>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <ThemeToggle />
+                  <button className="w-8 h-8 rounded-full border border-border flex items-center justify-center bg-background hover:bg-muted transition-colors">
+                    <User className="h-4 w-4 text-foreground" />
+                  </button>
                 </div>
               </div>
-              <button className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
-                <User className="h-4 w-4 text-white" />
-              </button>
+            </nav>
+            <div className="pt-16">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/politicians" element={<PoliticiansPage />} />
+                <Route path="/stocks" element={<StocksPage />}>
+                  <Route index element={<OverviewPage />} />
+                  <Route path="financials" element={<FinancialsPage />} />
+                  <Route path="insiders" element={<InsidersPage />} />
+                  <Route path="government" element={<GovernmentPage />} />
+                  <Route path="investors" element={<InvestorsPage />} />
+                  <Route path="news" element={<NewsPage />} />
+                </Route>
+              </Routes>
             </div>
-          </nav>
-          <div className="pt-16">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/politicians" element={<PoliticiansPage />} />
-              <Route path="/stocks" element={<StocksPage />}>
-                <Route index element={<OverviewPage />} />
-                <Route path="financials" element={<FinancialsPage />} />
-                <Route path="insiders" element={<InsidersPage />} />
-                <Route path="government" element={<GovernmentPage />} />
-                <Route path="investors" element={<InvestorsPage />} />
-                <Route path="news" element={<NewsPage />} />
-              </Route>
-            </Routes>
-          </div>
-        </SignedIn>
+          </SignedIn>
 
-        <SignedOut>
-          <HomePage />
-        </SignedOut>
-      </div>
-    </Router>
+          <SignedOut>
+            <HomePage />
+          </SignedOut>
+        </div>
+      </Router>
+    </ThemeProvider>
   )
 }
